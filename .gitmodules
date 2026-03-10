@@ -1,0 +1,4 @@
+[submodule "web"]
+	path = web
+	url = git@github.com:pranavskurup/aidoris-web.git
+    branch = main
