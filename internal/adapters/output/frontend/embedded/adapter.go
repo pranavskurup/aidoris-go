@@ -2,6 +2,7 @@ package embedded
 
 import (
 	"context"
+	"net"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -87,8 +88,13 @@ func (s *Server) Start(ctx context.Context) error {
 		binaryPath = tempFile.Name()
 	}
 
+	host, port, err := net.SplitHostPort(s.address)
+	if err != nil {
+		return err
+	}
+
 	command := exec.CommandContext(ctx, binaryPath)
-	command.Env = append(os.Environ(), "PORT=55001")
+	command.Env = append(os.Environ(), "HOST="+host, "PORT="+port)
 	command.Stdout = os.Stdout
 	command.Stderr = os.Stderr
 

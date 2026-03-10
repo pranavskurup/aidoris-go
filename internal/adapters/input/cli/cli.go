@@ -27,7 +27,7 @@ func NewFrontendCLI(runner inputfrontend.FrontendRunner) *FrontendCLI {
 func (c *FrontendCLI) Run(ctx context.Context) error {
 	var server outputfrontend.FrontendServer
 	if isDevMode() {
-		server = dev.NewServer("./web")
+		server = dev.NewServer("./web", ":55001")
 	} else {
 		server = embedded.NewServer(":55001")
 	}
