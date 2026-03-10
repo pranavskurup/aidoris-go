@@ -1,6 +1,6 @@
 //go:build linux && arm64
 
-package embeddedadapter
+package embedded
 
 import _ "embed"
 

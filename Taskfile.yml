@@ -65,7 +65,7 @@ tasks:
       - cd {{.WEB_APP_DIR}} && pnpm run build:deno:all
 
   generate:web:dist:
-    desc: Build web binaries then copy dist to embeddedadapter (cmd/generate_web_dist)
+    desc: Build web binaries then copy dist to embedded output adapter (cmd/generate_web_dist)
     deps:
       - task: build:web:binary:all
     cmds:

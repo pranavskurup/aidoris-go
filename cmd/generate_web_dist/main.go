@@ -10,7 +10,7 @@ import (
 
 const (
 	srcDistDir = "web/apps/web/dist"
-	dstDistDir = "internal/ports/frontend/embeddedadapter/dist"
+	dstDistDir = "internal/adapters/output/frontend/embedded/dist"
 )
 
 func main() {

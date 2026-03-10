@@ -1,4 +1,4 @@
-package embeddedadapter
+package embedded
 
 import (
 	"context"
@@ -8,17 +8,20 @@ import (
 	"runtime"
 )
 
-type EmbeddedFrontendServer struct {
+// Server implements ports/output/frontend.FrontendServer by running the embedded web binary.
+type Server struct {
 	address string
 }
 
-func NewEmbeddedFrontendServer(address string) *EmbeddedFrontendServer {
-	return &EmbeddedFrontendServer{
+// NewServer returns a frontend server that serves via the embedded binary.
+func NewServer(address string) *Server {
+	return &Server{
 		address: address,
 	}
 }
 
-func (s *EmbeddedFrontendServer) Start(ctx context.Context) error {
+// Start runs the embedded web binary until ctx is cancelled.
+func (s *Server) Start(ctx context.Context) error {
 	if len(embeddedWebBinary) == 0 {
 		return nil
 	}
@@ -30,7 +33,6 @@ func (s *EmbeddedFrontendServer) Start(ctx context.Context) error {
 		localAppData := os.Getenv("LOCALAPPDATA")
 
 		if localAppData == "" {
-			// Fallback to temporary file if LOCALAPPDATA is not set.
 			tempFile, err := os.CreateTemp("", pattern+".exe")
 			if err != nil {
 				return err
@@ -84,6 +86,7 @@ func (s *EmbeddedFrontendServer) Start(ctx context.Context) error {
 
 		binaryPath = tempFile.Name()
 	}
+
 	command := exec.CommandContext(ctx, binaryPath)
 	command.Env = append(os.Environ(), "PORT=55001")
 	command.Stdout = os.Stdout
@@ -99,4 +102,3 @@ func (s *EmbeddedFrontendServer) Start(ctx context.Context) error {
 
 	return nil
 }
-

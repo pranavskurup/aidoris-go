@@ -1,4 +1,4 @@
-package devadapter
+package dev
 
 import (
 	"context"
@@ -6,17 +6,20 @@ import (
 	"os/exec"
 )
 
-type DevFrontendServer struct {
+// Server implements ports/output/frontend.FrontendServer by running pnpm dev.
+type Server struct {
 	workingDir string
 }
 
-func NewDevFrontendServer(workingDir string) *DevFrontendServer {
-	return &DevFrontendServer{
+// NewServer returns a frontend server that runs the dev server in workingDir.
+func NewServer(workingDir string) *Server {
+	return &Server{
 		workingDir: workingDir,
 	}
 }
 
-func (s *DevFrontendServer) Start(ctx context.Context) error {
+// Start runs pnpm dev until ctx is cancelled.
+func (s *Server) Start(ctx context.Context) error {
 	if s.workingDir == "" {
 		return nil
 	}

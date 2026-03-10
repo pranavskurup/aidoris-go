@@ -1,6 +1,6 @@
 //go:build darwin && arm64
 
-package embeddedadapter
+package embedded
 
 import _ "embed"
 
