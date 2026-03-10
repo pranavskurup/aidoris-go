@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 
 	"github.com/pranavskurup/aidoris-go/internal/ports/frontend"
@@ -31,13 +32,10 @@ func main() {
 }
 
 func isDevMode() bool {
-	if os.Getenv("AIDORIS_DEV") == "1" {
-		return true
+	exe, err := os.Executable()
+	if err != nil {
+		return false
 	}
-
-	if os.Getenv("APP_ENV") == "dev" {
-		return true
-	}
-
-	return false
+	// When run via "go run ./cmd/aidoris", the binary lives in a temp path like .../go-build<hash>/b001/exe/aidoris
+	return strings.Contains(exe, "go-build")
 }
