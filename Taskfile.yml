@@ -7,72 +7,62 @@ vars:
   WEB_DIR: web
   WEB_APP_DIR: web/apps/web
 
+includes:
+  web:
+    taskfile: ./web/Taskfile.yml
+    dir: ./web
+
 tasks:
   build:web:
-    desc: Build the web frontend
-    dir: "{{.WEB_DIR}}"
+    desc: Build the web frontend (delegates to web/Taskfile)
     cmds:
-      - pnpm install
-      - pnpm build
+      - task: web:web:build
 
   build:web:binary:prepare:
-    desc: Prepare web app for Deno compile (.output)
-    dir: "{{.WEB_APP_DIR}}"
+    desc: Prepare web app for Deno compile (.output) (delegates to web/Taskfile)
+    run: once
     cmds:
-      - pnpm install
-      - pnpm run deno:prepare
+      - task: web:web:deno:prepare
 
   build:web:binary:linux_x64:
-    desc: Build aidoris-web binary for linux/amd64
+    desc: Build aidoris-web binary for linux/amd64 (delegates to web/Taskfile)
     deps:
       - task: build:web:binary:prepare
-    dir: "{{.WEB_APP_DIR}}"
     cmds:
-      - pnpm run build:deno:linux:x64
+      - task: web:web:deno:build:linux:x64
 
   build:web:binary:linux_arm64:
-    desc: Build aidoris-web binary for linux/arm64
+    desc: Build aidoris-web binary for linux/arm64 (delegates to web/Taskfile)
     deps:
       - task: build:web:binary:prepare
-    dir: "{{.WEB_APP_DIR}}"
     cmds:
-      - pnpm run build:deno:linux:arm64
+      - task: web:web:deno:build:linux:arm64
 
   build:web:binary:darwin_x64:
-    desc: Build aidoris-web binary for darwin/amd64
+    desc: Build aidoris-web binary for darwin/amd64 (delegates to web/Taskfile)
     deps:
       - task: build:web:binary:prepare
-    dir: "{{.WEB_APP_DIR}}"
     cmds:
-      - pnpm run build:deno:darwin:x64
+      - task: web:web:deno:build:darwin:x64
 
   build:web:binary:darwin_arm64:
-    desc: Build aidoris-web binary for darwin/arm64 (Apple Silicon)
+    desc: Build aidoris-web binary for darwin/arm64 (Apple Silicon, delegates to web/Taskfile)
     deps:
       - task: build:web:binary:prepare
-    dir: "{{.WEB_APP_DIR}}"
     cmds:
-      - pnpm run build:deno:darwin:arm64
+      - task: web:web:deno:build:darwin:arm64
 
   build:web:binary:windows_x64:
-    desc: Build aidoris-web binary for windows/amd64
+    desc: Build aidoris-web binary for windows/amd64 (delegates to web/Taskfile)
     deps:
       - task: build:web:binary:prepare
-    dir: "{{.WEB_APP_DIR}}"
     cmds:
-      - pnpm run build:deno:windows:x64
+      - task: web:web:deno:build:windows:x64
 
   build:web:binary:all:
-    desc: Build aidoris-web binaries for all OS/architectures (sequential)
-    deps:
-      - task: build:web:binary:prepare
-    dir: "{{.WEB_APP_DIR}}"
+    desc: Build aidoris-web binaries for all OS/architectures (prepare once, then all builds via pnpm; cross-platform)
     cmds:
-      - pnpm run build:deno:linux:x64
-      - pnpm run build:deno:linux:arm64
-      - pnpm run build:deno:darwin:x64
-      - pnpm run build:deno:darwin:arm64
-      - pnpm run build:deno:windows:x64
+      - cd {{.WEB_APP_DIR}} && pnpm run build:deno:all
 
   generate:web:dist:
     desc: Build web binaries then copy dist to embeddedadapter (cmd/generate_web_dist)
@@ -115,6 +105,6 @@ tasks:
 
   build:
     desc: Build web frontend, then Go binaries for all OS/architectures
-    deps:
-      - task: build:web
+    cmds:
+      - task: generate:web:dist
       - task: build:all
