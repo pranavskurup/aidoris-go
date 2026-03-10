@@ -1,4 +1,4 @@
 [submodule "web"]
 	path = web
 	url = git@github.com:pranavskurup/aidoris-web.git
-    branch = main
+	branch = 5863f71a355f3242604b7a939a0d6a6364bdbe6d
