@@ -32,8 +32,11 @@ func (s *Server) Start(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("frontend address: %w", err)
 	}
+	if host == "" {
+		host = "localhost"
+	}
 
-	listener, err := net.Listen("tcp", s.address)
+	listener, err := net.Listen("tcp", net.JoinHostPort(host, port))
 	if err != nil {
 		return fmt.Errorf("port not free: %w", err)
 	}

@@ -92,6 +92,9 @@ func (s *Server) Start(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+	if host == "" {
+		host = "localhost"
+	}
 
 	command := exec.CommandContext(ctx, binaryPath)
 	command.Env = append(os.Environ(), "HOST="+host, "PORT="+port)
